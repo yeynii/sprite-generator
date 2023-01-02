@@ -1,6 +1,7 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef } from "react";
 import styled from "styled-components";
 import { Config, Image } from "../App";
+import Button from "./Button";
 
 interface ConfigManagerProps {
   images: Image[];
@@ -17,6 +18,7 @@ const ConfigManager = ({
   config,
   setConfig
 }: ConfigManagerProps) => {
+  const formRef = useRef<HTMLFormElement>(null);
   const handleFileAddButtonClick = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
     const images = [];
@@ -42,27 +44,39 @@ const ConfigManager = ({
     });
   };
 
+  const handleResetButtonClick = () => {
+    if (!formRef.current) return;
+    formRef.current.reset();
+    onReset();
+  };
+
   return (
-    <Container>
+    <Container ref={formRef}>
       <ConfigInputs>
-        <label>가로</label>
-        <input
-          value={config.width}
-          onChange={(e) => handleInputChange(e, "width")}
-        />
-        px
-        <label> 세로</label>
-        <input
-          value={config.height}
-          onChange={(e) => handleInputChange(e, "height")}
-        />
-        px
-        <label> 간격</label>
-        <input
-          value={config.gap}
-          onChange={(e) => handleInputChange(e, "gap")}
-        />
-        px
+        <label>
+          가로
+          <input
+            value={config.width}
+            onChange={(e) => handleInputChange(e, "width")}
+          />
+          px
+        </label>
+        <label>
+          세로
+          <input
+            value={config.height}
+            onChange={(e) => handleInputChange(e, "height")}
+          />
+          px
+        </label>
+        <label>
+          간격
+          <input
+            value={config.gap}
+            onChange={(e) => handleInputChange(e, "gap")}
+          />
+          px
+        </label>
       </ConfigInputs>
       <ImageList>
         {images.map((image) => (
@@ -74,20 +88,25 @@ const ConfigManager = ({
       </ImageList>
       <Count>{images.length}개</Count>
       <FileAddButton>
-        <label htmlFor="image_uploads">업로드할 이미지 선택</label>
+        업로드할 이미지 선택
         <input
-          id="image_uploads"
           type="file"
           multiple
           accept="image/*"
-          onChange={(e) => handleFileAddButtonClick(e)}
+          onChange={handleFileAddButtonClick}
         />
       </FileAddButton>
-      <button onClick={onReset}>초기화</button>
+      <Button
+        onClick={handleResetButtonClick}
+        type="button"
+        disabled={images.length === 0}
+      >
+        목록 초기화
+      </Button>
     </Container>
   );
 };
-const Container = styled.div`
+const Container = styled.form`
   background-color: #dddddd;
   display: flex;
   flex-direction: column;
@@ -102,8 +121,9 @@ const Container = styled.div`
 const ConfigInputs = styled.div`
   display: flex;
   flex-direction: row;
-  > input {
-    width: 3rem;
+  gap: 5px;
+  input {
+    width: 2rem;
     text-align: right;
   }
 `;
@@ -132,7 +152,15 @@ const ImageList = styled.ul`
   }
 `;
 
-const FileAddButton = styled.button`
+const FileAddButton = styled.label`
+  background-color: #eeeeee;
+  border: 1px solid gray;
+  text-align: center;
+  font-size: 1em;
+  cursor: pointer;
+  :hover {
+    filter: brightness(0.9);
+  }
   > input {
     opacity: 0;
     height: 0;
