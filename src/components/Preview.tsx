@@ -70,25 +70,22 @@ const Container = styled.div`
 `;
 
 const Sprite = styled.div`
-  width: fit-content;
-  height: fit-content;
   min-width: 400px;
   min-height: 400px;
+  max-width: 800px;
+  max-height: 800px;
+  overflow: auto;
   padding: 10px;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACVJREFUKFNjPH78+H8GNGBpacmILsY4FBSiOxrEx+ZuDN8NQoUAvcgkr9zJV0kAAAAASUVORK5CYII=)
     repeat;
 `;
 
 const Grid = styled.div<{ col: number; config: Config }>`
-  width: ${({ col, config }) => config.width * col}px;
   display: grid;
   grid-template-columns: repeat(
     ${({ col, config }) => `${col}, ${config.width}px`}
   );
   grid-gap: ${({ config }) => config.gap}px;
-  > img {
-    display: grid;
-  }
 `;
 
 const DownloadButton = styled(Button)`
