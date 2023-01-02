@@ -1,14 +1,22 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import { Image } from "../App";
+import { Config, Image } from "../App";
 
 interface ConfigManagerProps {
   images: Image[];
   addImages: (newImages: Image[]) => void;
   onReset: () => void;
+  config: Config;
+  setConfig: Dispatch<SetStateAction<Config>>;
 }
 
-const ConfigManager = ({ images, addImages, onReset }: ConfigManagerProps) => {
+const ConfigManager = ({
+  images,
+  addImages,
+  onReset,
+  config,
+  setConfig
+}: ConfigManagerProps) => {
   const handleFileAddButtonClick = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
     const images = [];
@@ -23,16 +31,39 @@ const ConfigManager = ({ images, addImages, onReset }: ConfigManagerProps) => {
     addImages(images);
   };
 
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    type: keyof Config
+  ) => {
+    const { value } = e.target;
+    setConfig((prev) => {
+      const updated = { ...prev, [type]: value };
+      return updated;
+    });
+  };
+
   return (
     <Container>
-      <div>
+      <ConfigInputs>
         <label>가로</label>
-        <Input />
+        <input
+          value={config.width}
+          onChange={(e) => handleInputChange(e, "width")}
+        />
         px
         <label> 세로</label>
-        <Input />
+        <input
+          value={config.height}
+          onChange={(e) => handleInputChange(e, "height")}
+        />
         px
-      </div>
+        <label> 간격</label>
+        <input
+          value={config.gap}
+          onChange={(e) => handleInputChange(e, "gap")}
+        />
+        px
+      </ConfigInputs>
       <ImageList>
         {images.map((image) => (
           <li key={image.src}>
@@ -60,15 +91,21 @@ const Container = styled.div`
   background-color: #dddddd;
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: fit-content;
+  max-width: 400px;
   height: fit-content;
   padding: 10px;
   border: 1px solid black;
   gap: 10px;
 `;
 
-const Input = styled.input`
-  width: 3rem;
+const ConfigInputs = styled.div`
+  display: flex;
+  flex-direction: row;
+  > input {
+    width: 3rem;
+    text-align: right;
+  }
 `;
 
 const Count = styled.span`

@@ -10,27 +10,33 @@ export interface Image {
   src: string;
 }
 
-export interface Size {
+export interface Config {
   width: number;
   height: number;
+  gap: number;
 }
 
 function App() {
   const [images, setImages] = useState<Image[]>([]);
-  const [size, setSize] = useState<Size>({ width: 0, height: 0 });
+  const [config, setConfig] = useState<Config>({
+    width: 50,
+    height: 50,
+    gap: 0
+  });
 
   const addImages = (newImages: Image[]) => {
-    console.log(newImages);
     setImages(newImages);
   };
 
   return (
     <Container>
-      <Preview />
+      <Preview images={images} config={config} />
       <ConfigManager
         images={images}
         addImages={addImages}
         onReset={() => setImages([])}
+        config={config}
+        setConfig={setConfig}
       />
     </Container>
   );
