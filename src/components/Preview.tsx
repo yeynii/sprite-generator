@@ -2,6 +2,7 @@ import html2canvas from "html2canvas";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Config, Image } from "../App";
+import Button from "./Button";
 
 interface PreviewProps {
   images: Image[];
@@ -56,7 +57,7 @@ const Preview = ({ images, config }: PreviewProps) => {
           ))}
         </Grid>
       </Sprite>
-      <DownloadButton disabled={!sprite} onClick={onDownload}>
+      <DownloadButton disabled={!sprite} onClick={onDownload} type="button">
         webp다운로드
       </DownloadButton>
     </Container>
@@ -90,7 +91,7 @@ const Grid = styled.div<{ col: number; config: Config }>`
   }
 `;
 
-const DownloadButton = styled.button`
+const DownloadButton = styled(Button)`
   margin-top: 10px;
   width: 100%;
 `;
