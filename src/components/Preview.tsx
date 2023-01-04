@@ -12,10 +12,10 @@ interface PreviewProps {
 const Preview = ({ images, config }: PreviewProps) => {
   const imageRef = useRef<HTMLDivElement>(null);
   const [sprite, setSprite] = useState<string | null>(null);
-
-  const col = Math.ceil(
-    Math.sqrt(config.width * config.height * images.length) / config.width
-  );
+  const col = images.length;
+  // const col = Math.ceil(
+  //   Math.sqrt(config.width * config.height * images.length) / config.width
+  // );
 
   useEffect(() => {
     if (images.length === 0) {
@@ -26,8 +26,8 @@ const Preview = ({ images, config }: PreviewProps) => {
 
     html2canvas(imageRef.current, {
       scale: 1,
-      width: imageRef.current.clientWidth,
-      height: imageRef.current.clientHeight,
+      width: imageRef.current.scrollWidth,
+      height: imageRef.current.scrollHeight,
       backgroundColor: null
     }).then((canvas) => {
       setSprite(canvas.toDataURL("image/webp"));
@@ -65,22 +65,23 @@ const Preview = ({ images, config }: PreviewProps) => {
 };
 
 const Container = styled.div`
-  width: fit-content;
-  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
 `;
 
 const Sprite = styled.div`
-  min-width: 400px;
-  min-height: 400px;
-  max-width: 800px;
-  max-height: 800px;
+  width: 400px;
+  height: 400px;
   overflow: auto;
-  padding: 10px;
   background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACVJREFUKFNjPH78+H8GNGBpacmILsY4FBSiOxrEx+ZuDN8NQoUAvcgkr9zJV0kAAAAASUVORK5CYII=)
     repeat;
+  border: 1px solid black;
 `;
 
 const Grid = styled.div<{ col: number; config: Config }>`
+  width: fit-content;
   display: grid;
   grid-template-columns: repeat(
     ${({ col, config }) => `${col}, ${config.width}px`}
@@ -89,7 +90,6 @@ const Grid = styled.div<{ col: number; config: Config }>`
 `;
 
 const DownloadButton = styled(Button)`
-  margin-top: 10px;
   width: 100%;
 `;
 
